@@ -46,7 +46,7 @@ export default class App extends Component {
         });
     };
 
-    addItem() {
+    addItem(label) {
         const next_id = this.state.nextId;
         const next_nextId = next_id + 1
         this.setState(({ todoData }) => {
@@ -103,7 +103,7 @@ export default class App extends Component {
                     onToggleDone={ this.onDone }
                     onToggleImportant={ this.onImportant }
                 />
-                <ItemAddForm onAdded={ this.addItem } />
+                <ItemAddForm onAdded={ this.addItem() } />
             </div>
         );
     };
