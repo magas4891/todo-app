@@ -13,7 +13,6 @@ export default class SearchPanel extends Component {
 
     onSearch(e) {
         this.props.onSearch(e.target.value);
-        // console.log(this.props);
     };
 
     render () {

@@ -19,12 +19,14 @@ export default class App extends Component {
             ],
             nextId: 4,
             term: '',
+            filter: 'all',
         };
         this.deleteItem = this.deleteItem.bind(this);
         this.addItem = this.addItem.bind(this);
         this.onDone = this.onDone.bind(this);
         this.onImportant = this.onImportant.bind(this);
         this.searchKeyword = this.searchKeyword.bind(this);
+        this.filterFunction = this.filterFunction.bind(this);
     };
 
     createTodoItem(nextId, label= "New item" ) {
@@ -69,7 +71,7 @@ export default class App extends Component {
             ...arr.slice(0, idx),
             newItem,
             ...arr.slice(idx+1)
-        ])
+        ]);
 
     };
 
@@ -95,18 +97,38 @@ export default class App extends Component {
         });
     };
 
+    filterFunction(option) {
+        // console.log(option['name']);
+        this.setState({
+            filter: option
+        });
+    };
+
     search(arr, word) {
         if ( word.length === 0) {
             return arr;
-        };
+        }
         return arr.filter((item) => {
             return item.label.toLowerCase().includes(word.toLowerCase());
         });
     };
 
+    filterItems(arr, text) {
+        switch (text) {
+            case 'all':
+                return arr;
+            case 'active':
+                return arr.filter((item) => !item.done);
+            case 'done':
+                return arr.filter((item) => item.done);
+            default:
+                return arr;
+        }
+    };
+
     render() {
-        const { todoData, term } = this.state;
-        const visibleItems = this.search(todoData, term);
+        const { todoData, term, filter } = this.state;
+        const visibleItems = this.filterItems(this.search(todoData, term), filter);
         const done_count = todoData.filter(item => item.done).length;
         const have_to_do_count = todoData.length - done_count;
         return (
@@ -114,7 +136,7 @@ export default class App extends Component {
                 <AppHeader toDo={have_to_do_count} done={done_count} />
                 <div className="top-panel d-flex" >
                     <SearchPanel onSearch={ this.searchKeyword }/>
-                    <ItemStatusFilter />
+                    <ItemStatusFilter filter={filter} onFilter={ this.filterFunction } />
                 </div>
                 <TodoList
                     todos={ visibleItems }
