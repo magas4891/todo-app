@@ -18,11 +18,13 @@ export default class App extends Component {
                 this.createTodoItem(3, 'Have a lunch')
             ],
             nextId: 4,
+            term: '',
         };
         this.deleteItem = this.deleteItem.bind(this);
         this.addItem = this.addItem.bind(this);
         this.onDone = this.onDone.bind(this);
         this.onImportant = this.onImportant.bind(this);
+        this.searchKeyword = this.searchKeyword.bind(this);
     };
 
     createTodoItem(nextId, label= "New item" ) {
@@ -48,7 +50,7 @@ export default class App extends Component {
 
     addItem(label) {
         const next_id = this.state.nextId;
-        const next_nextId = next_id + 1
+        const next_nextId = next_id + 1;
         this.setState(({ todoData }) => {
             const result = [...todoData, this.createTodoItem(next_id, label)];
             console.log(result);
@@ -87,19 +89,35 @@ export default class App extends Component {
         });
     };
 
+    searchKeyword(keyword) {
+        this.setState({
+            term: keyword
+        });
+    };
+
+    search(arr, word) {
+        if ( word.length === 0) {
+            return arr;
+        };
+        return arr.filter((item) => {
+            return item.label.toLowerCase().includes(word.toLowerCase());
+        });
+    };
+
     render() {
-        const { todoData } = this.state;
+        const { todoData, term } = this.state;
+        const visibleItems = this.search(todoData, term);
         const done_count = todoData.filter(item => item.done).length;
         const have_to_do_count = todoData.length - done_count;
         return (
             <div className="todo-app">
                 <AppHeader toDo={have_to_do_count} done={done_count} />
                 <div className="top-panel d-flex" >
-                    <SearchPanel />
+                    <SearchPanel onSearch={ this.searchKeyword }/>
                     <ItemStatusFilter />
                 </div>
                 <TodoList
-                    todos={ todoData }
+                    todos={ visibleItems }
                     onDeleted={ this.deleteItem }
                     onToggleDone={ this.onDone }
                     onToggleImportant={ this.onImportant }
