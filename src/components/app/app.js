@@ -50,7 +50,8 @@ export default class App extends Component {
         const next_id = this.state.nextId;
         const next_nextId = next_id + 1
         this.setState(({ todoData }) => {
-            const result = [...todoData, this.createTodoItem(next_id)];
+            const result = [...todoData, this.createTodoItem(next_id, label)];
+            console.log(result);
             return {
                 todoData: result,
                 nextId: next_nextId
@@ -103,7 +104,7 @@ export default class App extends Component {
                     onToggleDone={ this.onDone }
                     onToggleImportant={ this.onImportant }
                 />
-                <ItemAddForm onAdded={ this.addItem() } />
+                <ItemAddForm onAdded={ this.addItem } />
             </div>
         );
     };
